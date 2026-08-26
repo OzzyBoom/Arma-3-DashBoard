@@ -202,13 +202,56 @@
       font-size: 32px;
       letter-spacing: 2px;
       color: #cc0000;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       text-shadow: 0 0 10px rgba(204, 0, 0, 0.5);
     }
 
-    #main-dashboard p {
-      font-size: 16px;
+    #main-dashboard p.subhead {
+      font-size: 14px;
       color: #ccc;
+      margin-bottom: 24px;
+    }
+
+    /* Dashboard Cards Grid */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      text-align: left;
+    }
+
+    .dash-card {
+      background: #121318;
+      border: 1px solid #2a2c35;
+      padding: 20px;
+      border-radius: 4px;
+    }
+
+    .dash-card h3 {
+      font-size: 16px;
+      color: #ff3333;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #2a2c35;
+      padding-bottom: 6px;
+    }
+
+    .dash-card p, .dash-card li {
+      font-size: 13px;
+      color: #cccccc;
+      line-height: 1.6;
+    }
+
+    .dash-card ul {
+      list-style-type: none;
+    }
+
+    .dash-card li {
+      padding: 6px 0;
+      border-bottom: 1px solid #1a1c23;
+    }
+
+    .dash-card li strong {
+      color: #ffffff;
     }
   </style>
 </head>
@@ -263,7 +306,37 @@
   <!-- Main Dashboard View (Appears after clicking Login) -->
   <div id="main-dashboard">
     <h1>TACTICAL OPERATIONS DASHBOARD</h1>
-    <p>SYSTEM ACCESS GRANTED // WELCOME AGENT</p>
+    <p class="subhead">SYSTEM ACCESS GRANTED // WELCOME AGENT</p>
+
+    <div class="grid-container">
+      <div class="dash-card">
+        <h3>ACTIVE OPERATIONS</h3>
+        <ul>
+          <li><strong>Mission:</strong> Operation Red Shield</li>
+          <li><strong>Map:</strong> Altis</li>
+          <li><strong>Player Count:</strong> 24 / 64</li>
+          <li><strong>Uptime:</strong> 02:45:12</li>
+        </ul>
+      </div>
+
+      <div class="dash-card">
+        <h3>SERVER STATUS</h3>
+        <ul>
+          <li><strong>FPS:</strong> 48.2</li>
+          <li><strong>Modset:</strong> WWII / Umbrella Assets</li>
+          <li><strong>Difficulty:</strong> Custom / Hardcore</li>
+          <li><strong>Port:</strong> 2302</li>
+        </ul>
+      </div>
+
+      <div class="dash-card">
+        <h3>SYSTEM LOGS</h3>
+        <p>[18:42:01] Mission script initialized successfully.<br>
+        [18:45:10] Player connected.<br>
+        [19:10:05] C-47 Airborne event triggered.<br>
+        [20:15:30] Objective 1 completed.</p>
+      </div>
+    </div>
   </div>
 
   <!-- Security Warning Footer -->
@@ -309,5 +382,7 @@
       }, 500);
     }
   </script>
+</body>
+</html>
 </body>
 </html>
