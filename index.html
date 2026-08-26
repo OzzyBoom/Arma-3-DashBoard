@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UMBRELLA CORP Terminal</title>
+  <title>Arma 3 - Mission Dashboard</title>
   
   <!-- Tab Favicon -->
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
@@ -15,7 +15,6 @@
       padding: 0;
     }
 
-    /* Full Window Setup with Red World Map Background */
     body {
       background-color: #000;
       color: #fff;
@@ -26,15 +25,16 @@
       align-items: center;
       padding: 20px 10px;
       font-family: Arial, Helvetica, sans-serif;
+      /* Default Umbrella Red Map Overlay Background */
       background: 
         radial-gradient(circle at 50% 50%, rgba(180, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.95) 75%),
         url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg') center/cover no-repeat;
       background-blend-mode: color-dodge, normal;
       overflow-x: hidden;
-      transition: background 0.8s ease;
+      transition: background 0.5s ease;
     }
 
-    /* Top Sub-Header */
+    /* --- UMBRELLA LOGIN OVERLAY STYLES --- */
     .top-header {
       text-align: center;
       margin-top: 10px;
@@ -47,7 +47,6 @@
       line-height: 1.4;
     }
 
-    /* Main Terminal Card */
     .login-card {
       width: 100%;
       max-width: 440px;
@@ -56,10 +55,8 @@
       box-shadow: 0 0 30px rgba(204, 0, 0, 0.75);
       padding: 24px;
       margin: auto;
-      transition: opacity 0.5s ease;
     }
 
-    /* Card Header & Umbrella Logo */
     .card-header {
       display: flex;
       align-items: center;
@@ -111,7 +108,6 @@
       flex-shrink: 0;
     }
 
-    /* Form Body */
     .card-body {
       background: #181818;
       padding: 16px;
@@ -151,7 +147,6 @@
       color: #fff;
     }
 
-    /* Login Button */
     #init-btn {
       background: #000000;
       color: #ffffff;
@@ -170,7 +165,6 @@
       box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
     }
 
-    /* Security Footer */
     .security-warning {
       max-width: 800px;
       text-align: center;
@@ -187,34 +181,80 @@
       letter-spacing: 1px;
     }
 
-    /* Main Content Container (Hidden until Login) */
+    /* --- MAIN ARMA 3 DASHBOARD STYLES (HIDDEN UNTIL LOGIN) --- */
     #main-dashboard {
       display: none;
-      opacity: 0;
       width: 100%;
       max-width: 1200px;
-      margin: auto;
-      text-align: center;
-      transition: opacity 0.8s ease;
+      margin: 0 auto;
+      padding: 20px;
     }
 
-    #main-dashboard h1 {
-      font-size: 32px;
-      letter-spacing: 2px;
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #333;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    .dash-header h1 {
+      font-size: 24px;
+      letter-spacing: 1.5px;
       color: #cc0000;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px rgba(204, 0, 0, 0.5);
     }
 
-    #main-dashboard p {
+    .dash-status {
+      font-size: 13px;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .dash-card {
+      background: #121318;
+      border: 1px solid #2a2c35;
+      padding: 20px;
+      border-radius: 4px;
+    }
+
+    .dash-card h3 {
       font-size: 16px;
-      color: #ccc;
+      color: #ff3333;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #2a2c35;
+      padding-bottom: 6px;
+    }
+
+    .dash-card p, .dash-card li {
+      font-size: 13px;
+      color: #cccccc;
+      line-height: 1.6;
+    }
+
+    .dash-card ul {
+      list-style-type: none;
+    }
+
+    .dash-card li {
+      padding: 6px 0;
+      border-bottom: 1px solid #1a1c23;
+    }
+
+    .dash-card li strong {
+      color: #ffffff;
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Audio -->
+  <!-- Audio Element -->
   <audio id="bg-audio" src="theme.mp3" preload="auto"></audio>
 
   <!-- Top Facility Header -->
@@ -223,7 +263,7 @@
     Raccoon City Facility
   </div>
 
-  <!-- Main Login Terminal Card -->
+  <!-- Umbrella Login Terminal Overlay -->
   <div class="login-card" id="login-card">
     <div class="card-header">
       <div class="header-text">
@@ -260,17 +300,55 @@
     </div>
   </div>
 
-  <!-- Main Dashboard View (Appears after clicking Login) -->
-  <div id="main-dashboard">
-    <h1>TACTICAL OPERATIONS DASHBOARD</h1>
-    <p>SYSTEM ACCESS GRANTED // WELCOME AGENT</p>
-  </div>
-
   <!-- Security Warning Footer -->
   <div class="security-warning" id="security-warning">
     <strong>SECURITY WARNING!</strong><br>
     Anything viewed beyond this point is covered under the UMBRELLA Corp Security Agreement section of the Employee Code of Conduct.<br>
     Second Party viewing by individuals without proper security clearance, will be handled by the highest administrative level possible!
+  </div>
+
+  <!-- FULL ARMA 3 MISSION DASHBOARD CONTENT (Revealed on Login) -->
+  <div id="main-dashboard">
+    <header class="dash-header">
+      <div>
+        <h1>ARMA 3 MISSION DASHBOARD</h1>
+        <p style="font-size: 12px; color: #888;">TACTICAL OPERATIONS & SYSTEM LOGS</p>
+      </div>
+      <div class="dash-status">● SYSTEM ACTIVE</div>
+    </header>
+
+    <div class="grid-container">
+      <!-- Active Operations Card -->
+      <div class="dash-card">
+        <h3>ACTIVE OPERATIONS</h3>
+        <ul>
+          <li><strong>Mission:</strong> Operation Red Shield</li>
+          <li><strong>Map:</strong> Altis</li>
+          <li><strong>Player Count:</strong> 24 / 64</li>
+          <li><strong>Uptime:</strong> 02:45:12</li>
+        </ul>
+      </div>
+
+      <!-- Server Quick Stats -->
+      <div class="dash-card">
+        <h3>SERVER STATUS</h3>
+        <ul>
+          <li><strong>FPS:</strong> 48.2</li>
+          <li><strong>Modset:</strong> WWII / Umbrella Assets</li>
+          <li><strong>Difficulty:</strong> Custom / Hardcore</li>
+          <li><strong>Port:</strong> 2302</li>
+        </ul>
+      </div>
+
+      <!-- Operational Logs -->
+      <div class="dash-card">
+        <h3>SYSTEM LOGS</h3>
+        <p>[18:42:01] Mission script initialized successfully.<br>
+        [18:45:10] Player Ozzie connected.<br>
+        [19:10:05] C-47 Airborne event triggered.<br>
+        [20:15:30] Objective 1 completed.</p>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -285,28 +363,22 @@
         });
       }
 
-      const loginCard = document.getElementById('login-card');
-      const topHeader = document.getElementById('top-header');
-      const warningFooter = document.getElementById('security-warning');
+      // Hide all overlay elements
+      document.getElementById('login-card').style.display = 'none';
+      document.getElementById('top-header').style.display = 'none';
+      document.getElementById('security-warning').style.display = 'none';
+
+      // Switch body layout and background for main dashboard view
+      document.body.style.background = '#0a0a0c';
+      document.body.style.justifyContent = 'flex-start';
+
+      // Show the complete mission dashboard
       const dashboard = document.getElementById('main-dashboard');
-
-      // Hide login elements
-      loginCard.style.opacity = '0';
-      setTimeout(() => {
-        loginCard.style.display = 'none';
-        topHeader.style.display = 'none';
-        warningFooter.style.display = 'none';
-        
-        // Show main dashboard
-        dashboard.style.display = 'block';
-        setTimeout(() => {
-          dashboard.style.opacity = '1';
-        }, 50);
-
-        // Adjust background for dashboard view
-        document.body.style.background = '#0a0a0c';
-        document.body.style.justifyContent = 'center';
-      }, 500);
+      dashboard.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
     }
   </script>
 </body>
