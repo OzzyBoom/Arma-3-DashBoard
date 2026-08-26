@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMBRELLA CORP Terminal</title>
+  
+  <!-- Tab Favicon -->
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Full Window Setup with Red World Map Background */
+    body {
+      background-color: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(180, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.95) 75%),
+        url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg') center/cover no-repeat;
+      background-blend-mode: color-dodge, normal;
+      overflow-x: hidden;
+      transition: background 0.8s ease;
+    }
+
+    /* Top Sub-Header */
+    .top-header {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #eaeaea;
+      text-transform: uppercase;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+      line-height: 1.4;
+    }
+
+    /* Main Terminal Card */
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background-color: #0d0d0d;
+      border: 3px solid #cc0000;
+      box-shadow: 0 0 30px rgba(204, 0, 0, 0.75);
+      padding: 24px;
+      margin: auto;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Card Header & Umbrella Logo */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #cc0000;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+
+    .header-text h2 {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .header-text h3 {
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      color: #cc0000;
+      margin-top: 3px;
+    }
+
+    .header-text p {
+      color: #aaaaaa;
+      font-size: 9px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    .umbrella-logo {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #cc0000 0deg 45deg,
+        #ffffff 45deg 90deg,
+        #cc0000 90deg 135deg,
+        #ffffff 135deg 180deg,
+        #cc0000 180deg 225deg,
+        #ffffff 225deg 270deg,
+        #cc0000 270deg 315deg,
+        #ffffff 315deg 360deg
+      );
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+      flex-shrink: 0;
+    }
+
+    /* Form Body */
+    .card-body {
+      background: #181818;
+      padding: 16px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      background: #000000;
+      border: 1px solid #cc0000;
+      margin-bottom: 12px;
+      padding: 4px 10px;
+    }
+
+    .input-group .icon {
+      font-size: 14px;
+      margin-right: 10px;
+      color: #cccccc;
+      user-select: none;
+    }
+
+    .input-group input, 
+    .input-group select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      outline: none;
+      font-size: 13px;
+      padding: 6px 0;
+      font-family: inherit;
+    }
+
+    .input-group select option {
+      background-color: #0d0d0d;
+      color: #fff;
+    }
+
+    /* Login Button */
+    #init-btn {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #cc0000;
+      padding: 8px 24px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 4px;
+    }
+
+    #init-btn:hover {
+      background: #cc0000;
+      color: #000000;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+    }
+
+    /* Security Footer */
+    .security-warning {
+      max-width: 800px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #dddddd;
+      text-shadow: 0 0 4px #000000;
+      margin-bottom: 10px;
+    }
+
+    .security-warning strong {
+      color: #ffffff;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* Main Content Container (Hidden until Login) */
+    #main-dashboard {
+      display: none;
+      opacity: 0;
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+      text-align: center;
+      transition: opacity 0.8s ease;
+    }
+
+    #main-dashboard h1 {
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #cc0000;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(204, 0, 0, 0.5);
+    }
+
+    #main-dashboard p {
+      font-size: 16px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Audio -->
+  <audio id="bg-audio" src="theme.mp3" preload="auto"></audio>
+
+  <!-- Top Facility Header -->
+  <div class="top-header" id="top-header">
+    UMBRELLA Corp Biotechnological Division LLC<br>
+    Raccoon City Facility
+  </div>
+
+  <!-- Main Login Terminal Card -->
+  <div class="login-card" id="login-card">
+    <div class="card-header">
+      <div class="header-text">
+        <h2>UMBRELLA</h2>
+        <h3>CORPORATION</h3>
+        <p>OUR BUSINESS IS LIFE ITSELF</p>
+      </div>
+      <div class="umbrella-logo"></div>
+    </div>
+
+    <div class="card-body">
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <span class="icon">👤</span>
+          <input type="text" id="username" placeholder="User Name" required autocomplete="off">
+        </div>
+        
+        <div class="input-group">
+          <span class="icon">🔒</span>
+          <input type="password" id="password" placeholder="Password" required>
+        </div>
+        
+        <div class="input-group">
+          <span class="icon">🔊</span>
+          <select>
+            <option>Language - Default</option>
+            <option>English (US)</option>
+            <option>Japanese</option>
+          </select>
+        </div>
+        
+        <button type="submit" id="init-btn">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Dashboard View (Appears after clicking Login) -->
+  <div id="main-dashboard">
+    <h1>TACTICAL OPERATIONS DASHBOARD</h1>
+    <p>SYSTEM ACCESS GRANTED // WELCOME AGENT</p>
+  </div>
+
+  <!-- Security Warning Footer -->
+  <div class="security-warning" id="security-warning">
+    <strong>SECURITY WARNING!</strong><br>
+    Anything viewed beyond this point is covered under the UMBRELLA Corp Security Agreement section of the Employee Code of Conduct.<br>
+    Second Party viewing by individuals without proper security clearance, will be handled by the highest administrative level possible!
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      // Play audio on submit
+      const audio = document.getElementById('bg-audio');
+      if (audio) {
+        audio.play().catch(error => {
+          console.warn("Audio playback issue:", error);
+        });
+      }
+
+      const loginCard = document.getElementById('login-card');
+      const topHeader = document.getElementById('top-header');
+      const warningFooter = document.getElementById('security-warning');
+      const dashboard = document.getElementById('main-dashboard');
+
+      // Hide login elements
+      loginCard.style.opacity = '0';
+      setTimeout(() => {
+        loginCard.style.display = 'none';
+        topHeader.style.display = 'none';
+        warningFooter.style.display = 'none';
+        
+        // Show main dashboard
+        dashboard.style.display = 'block';
+        setTimeout(() => {
+          dashboard.style.opacity = '1';
+        }, 50);
+
+        // Adjust background for dashboard view
+        document.body.style.background = '#0a0a0c';
+        document.body.style.justifyContent = 'center';
+      }, 500);
+    }
+  </script>
+</body>
+</html>
