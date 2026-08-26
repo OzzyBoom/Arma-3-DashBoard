@@ -1,389 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UMBRELLA CORP Terminal</title>
-  
-  <!-- Tab Favicon -->
-  <link rel="icon" type="image/jpeg" href="favicon.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[CLASSIFIED]</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%2300ff88' stroke-width='6'><rect width='100' height='100' fill='%23050608'/><circle cx='50' cy='35' r='18'/><circle cx='37' cy='58' r='18'/><circle cx='63' cy='58' r='18'/><circle cx='50' cy='50' r='8' stroke='%23a855f7'/><circle cx='50' cy='50' r='26' stroke='%2300f0ff' stroke-width='4' stroke-dasharray='10 5'/></svg>">
+    
+    <style>
+        :root {
+            --bg-color: #050608;
+            --panel-bg: #12141c;
+            --panel-border: #1f2430;
+            --accent-red: #8b0000;
+            --bright-red: #ff2a2a;
+            --text-main: #c5c6c7;
+            --text-muted: #66fcf1;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        * { box-sizing: border-box; }
 
-    /* Full Window Setup with Red World Map Background */
-    body {
-      background-color: #000;
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 10px;
-      font-family: Arial, Helvetica, sans-serif;
-      background: 
-        radial-gradient(circle at 50% 50%, rgba(180, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.95) 75%),
-        url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg') center/cover no-repeat;
-      background-blend-mode: color-dodge, normal;
-      overflow-x: hidden;
-      transition: background 0.8s ease;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
 
-    /* Top Sub-Header */
-    .top-header {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 14px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      color: #eaeaea;
-      text-transform: uppercase;
-      text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
-      line-height: 1.4;
-    }
+        /* --- CRT SCANLINE OVERLAY --- */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 10000;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+        }
 
-    /* Main Terminal Card */
-    .login-card {
-      width: 100%;
-      max-width: 440px;
-      background-color: #0d0d0d;
-      border: 3px solid #cc0000;
-      box-shadow: 0 0 30px rgba(204, 0, 0, 0.75);
-      padding: 24px;
-      margin: auto;
-      transition: opacity 0.5s ease;
-    }
+        /* --- FULLY OPAQUE SPLASH SCREEN --- */
+        #splash-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #050608; /* SOLID BLACK BACKGROUND */
+            background-image: radial-gradient(circle at center, rgba(139, 0, 0, 0.25) 0%, rgba(5, 6, 8, 1) 75%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
 
-    /* Card Header & Umbrella Logo */
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid #cc0000;
-      padding-bottom: 14px;
-      margin-bottom: 18px;
-    }
+        #splash-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
-    .header-text h2 {
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      color: #ffffff;
-      line-height: 1;
-    }
+        .scan-line {
+            position: absolute;
+            width: 100%; height: 2px;
+            background: rgba(255, 42, 42, 0.4);
+            box-shadow: 0 0 15px var(--bright-red);
+            top: 0;
+            animation: scan 4s infinite linear;
+        }
 
-    .header-text h3 {
-      font-size: 13px;
-      font-weight: bold;
-      letter-spacing: 3px;
-      color: #cc0000;
-      margin-top: 3px;
-    }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
 
-    .header-text p {
-      color: #aaaaaa;
-      font-size: 9px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-top: 6px;
-    }
+        .splash-card {
+            text-align: center;
+            padding: 40px 50px;
+            background: #0a0c10;
+            border: 1px solid var(--bright-red);
+            box-shadow: 0 0 35px rgba(255, 42, 42, 0.3), inset 0 0 15px rgba(255, 42, 42, 0.1);
+            max-width: 520px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .umbrella-logo {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      background: conic-gradient(
-        #cc0000 0deg 45deg,
-        #ffffff 45deg 90deg,
-        #cc0000 90deg 135deg,
-        #ffffff 135deg 180deg,
-        #cc0000 180deg 225deg,
-        #ffffff 225deg 270deg,
-        #cc0000 270deg 315deg,
-        #ffffff 315deg 360deg
-      );
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
-      flex-shrink: 0;
-    }
+        .umbrella-logo-svg {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(255, 42, 42, 0.6));
+            animation: pulse 3s infinite ease-in-out;
+        }
 
-    /* Form Body */
-    .card-body {
-      background: #181818;
-      padding: 16px;
-      border: 1px solid #2a2a2a;
-    }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255, 42, 42, 0.5)); }
+            50% { transform: scale(1.04); filter: drop-shadow(0 0 16px rgba(255, 42, 42, 0.8)); }
+        }
 
-    .input-group {
-      display: flex;
-      align-items: center;
-      background: #000000;
-      border: 1px solid #cc0000;
-      margin-bottom: 12px;
-      padding: 4px 10px;
-    }
+        .splash-title {
+            color: #fff;
+            font-size: 1.6rem;
+            letter-spacing: 4px;
+            margin: 0 0 6px 0;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.7);
+        }
 
-    .input-group .icon {
-      font-size: 14px;
-      margin-right: 10px;
-      color: #cccccc;
-      user-select: none;
-    }
+        .splash-subtitle {
+            color: var(--bright-red);
+            font-size: 0.75rem;
+            letter-spacing: 2.5px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
 
-    .input-group input, 
-    .input-group select {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      outline: none;
-      font-size: 13px;
-      padding: 6px 0;
-      font-family: inherit;
-    }
+        .btn-init {
+            background-color: var(--accent-red);
+            color: #fff;
+            border: 1px solid var(--bright-red);
+            padding: 14px 32px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.6);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .input-group select option {
-      background-color: #0d0d0d;
-      color: #fff;
-    }
+        .btn-init:hover {
+            background-color: var(--bright-red);
+            box-shadow: 0 0 25px rgba(255, 42, 42, 0.9);
+            transform: translateY(-2px);
+        }
 
-    /* Login Button */
-    #init-btn {
-      background: #000000;
-      color: #ffffff;
-      border: 1px solid #cc0000;
-      padding: 8px 24px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 4px;
-    }
+        .system-status {
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: #777;
+            letter-spacing: 1px;
+        }
 
-    #init-btn:hover {
-      background: #cc0000;
-      color: #000000;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
-    }
+        /* --- DASHBOARD STYLES --- */
+        .sidebar {
+            width: 280px;
+            background-color: #050608;
+            border-right: 1px solid var(--accent-red);
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* Security Footer */
-    .security-warning {
-      max-width: 800px;
-      text-align: center;
-      font-size: 11px;
-      line-height: 1.4;
-      color: #dddddd;
-      text-shadow: 0 0 4px #000000;
-      margin-bottom: 10px;
-    }
+        .brand {
+            padding: 20px 15px;
+            background: linear-gradient(180deg, var(--accent-red) 0%, #050608 100%);
+            border-bottom: 1px solid var(--bright-red);
+            text-align: center;
+        }
 
-    .security-warning strong {
-      color: #ffffff;
-      font-size: 12px;
-      letter-spacing: 1px;
-    }
+        .brand h2 { margin: 0; color: #fff; font-size: 1.1rem; letter-spacing: 2px; }
+        .brand p { margin: 5px 0 0 0; font-size: 0.65rem; color: #aaa; }
 
-    /* Main Content Container (Hidden until Login) */
-    #main-dashboard {
-      display: none;
-      opacity: 0;
-      width: 100%;
-      max-width: 1200px;
-      margin: auto;
-      text-align: center;
-      transition: opacity 0.8s ease;
-    }
+        .nav-list { list-style: none; padding: 0; margin: 20px 0; }
+        .nav-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
 
-    #main-dashboard h1 {
-      font-size: 32px;
-      letter-spacing: 2px;
-      color: #cc0000;
-      margin-bottom: 6px;
-      text-shadow: 0 0 10px rgba(204, 0, 0, 0.5);
-    }
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 42, 42, 0.1);
+            border-left-color: var(--bright-red);
+            color: #fff;
+        }
 
-    #main-dashboard p.subhead {
-      font-size: 14px;
-      color: #ccc;
-      margin-bottom: 24px;
-    }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
 
-    /* Dashboard Cards Grid */
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      text-align: left;
-    }
+        .top-bar {
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--panel-border);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .dash-card {
-      background: #121318;
-      border: 1px solid #2a2c35;
-      padding: 20px;
-      border-radius: 4px;
-    }
+        .top-bar h1 { margin: 0; font-size: 1.2rem; color: #fff; letter-spacing: 1.5px; }
 
-    .dash-card h3 {
-      font-size: 16px;
-      color: #ff3333;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #2a2c35;
-      padding-bottom: 6px;
-    }
+        .tab-page { padding: 25px; display: none; }
+        .tab-page.active { display: block; }
 
-    .dash-card p, .dash-card li {
-      font-size: 13px;
-      color: #cccccc;
-      line-height: 1.6;
-    }
+        .badge {
+            background-color: rgba(255, 42, 42, 0.2);
+            border: 1px solid var(--bright-red);
+            color: var(--bright-red);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+        }
 
-    .dash-card ul {
-      list-style-type: none;
-    }
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-top: 2px solid var(--accent-red);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-    .dash-card li {
-      padding: 6px 0;
-      border-bottom: 1px solid #1a1c23;
-    }
+        .panel h3 {
+            margin-top: 0;
+            color: #fff;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 8px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
 
-    .dash-card li strong {
-      color: #ffffff;
-    }
-  </style>
+        .map-container {
+            width: 100%;
+            max-height: 550px;
+            background-color: #000;
+            border: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        .map-container img {
+            max-width: 100%;
+            max-height: 530px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .obj-list { list-style: none; padding: 0; }
+        .obj-list li {
+            padding: 8px 12px;
+            border-left: 2px solid var(--bright-red);
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .intel-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .intel-card { flex: 1; background: #0d0f17; border: 1px solid var(--panel-border); padding: 12px; }
+        .intel-card h4 { margin: 0 0 5px 0; color: var(--text-muted); font-size: 0.8rem; }
+        .intel-card p { margin: 0; font-size: 0.9rem; color: #fff; }
+
+        .squad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .slot-card { background: #0d0f17; border: 1px solid var(--panel-border); padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .slot-title { font-size: 0.85rem; color: var(--text-muted); }
+        .slot-input { background: #000; border: 1px solid var(--panel-border); color: #fff; padding: 6px 10px; font-family: inherit; font-size: 0.8rem; width: 140px; }
+        .slot-btn { background: var(--accent-red); border: 1px solid var(--bright-red); color: #fff; padding: 6px 10px; cursor: pointer; font-family: inherit; font-size: 0.75rem; }
+        .slot-btn:hover { background: var(--bright-red); }
+    </style>
 </head>
 <body>
 
-  <!-- Background Audio -->
-  <audio id="bg-audio" src="theme.mp3" preload="auto"></audio>
+    <!-- AUDIO FILES (Checks theme.mp3, Hive.mp3, or hive.mp3) -->
+    <audio id="bg-theme" loop preload="auto">
+        <source src="theme.mp3" type="audio/mpeg">
+        <source src="Hive.mp3" type="audio/mpeg">
+        <source src="hive.mp3" type="audio/mpeg">
+    </audio>
 
-  <!-- Top Facility Header -->
-  <div class="top-header" id="top-header">
-    UMBRELLA Corp Biotechnological Division LLC<br>
-    Raccoon City Facility
-  </div>
+    <!-- SPLASH SCREEN OVERLAY -->
+    <div id="splash-overlay">
+        <div class="scan-line"></div>
+        <div class="splash-card">
+            
+            <svg class="umbrella-logo-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="250" cy="250" r="240" fill="#000000" stroke="#ff2a2a" stroke-width="8"/>
+                <path d="M250 250 L250 10 A240 240 0 0 1 419.7 80.3 Z" fill="#b30000"/>
+                <path d="M250 250 L419.7 80.3 A240 240 0 0 1 490 250 Z" fill="#ffffff"/>
+                <path d="M250 250 L490 250 A240 240 0 0 1 419.7 419.7 Z" fill="#b30000"/>
+                <path d="M250 250 L419.7 419.7 A240 240 0 0 1 250 490 Z" fill="#ffffff"/>
+                <path d="M250 250 L250 490 A240 240 0 0 1 80.3 419.7 Z" fill="#b30000"/>
+                <path d="M250 250 L80.3 419.7 A240 240 0 0 1 10 250 Z" fill="#ffffff"/>
+                <path d="M250 250 L10 250 A240 240 0 0 1 80.3 80.3 Z" fill="#b30000"/>
+                <path d="M250 250 L80.3 80.3 A240 240 0 0 1 250 10 Z" fill="#ffffff"/>
+                <circle cx="250" cy="250" r="240" fill="none" stroke="#000000" stroke-width="12"/>
+            </svg>
 
-  <!-- Main Login Terminal Card -->
-  <div class="login-card" id="login-card">
-    <div class="card-header">
-      <div class="header-text">
-        <h2>UMBRELLA</h2>
-        <h3>CORPORATION</h3>
-        <p>OUR BUSINESS IS LIFE ITSELF</p>
-      </div>
-      <div class="umbrella-logo"></div>
+            <h2 class="splash-title">UMBRELLA CORP</h2>
+            <div class="splash-subtitle">TACTICAL OPERATIONS NETWORK // RESTRICTED</div>
+            
+            <button class="btn-init" onclick="initializeSystem()">
+                <span>⏻</span> INITIALIZE SYSTEM
+            </button>
+
+            <div class="system-status" id="status-text">SECURE LINK ESTABLISHED // AWAITING AUTHORIZATION</div>
+        </div>
     </div>
 
-    <div class="card-body">
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <div class="input-group">
-          <span class="icon">👤</span>
-          <input type="text" id="username" placeholder="User Name" required autocomplete="off">
+    <!-- SIDEBAR NAVIGATION -->
+    <div class="sidebar">
+        <div class="brand">
+            <h2>☣ UMBRELLA CORP</h2>
+            <p>TACTICAL OPERATIONS HUB</p>
         </div>
-        
-        <div class="input-group">
-          <span class="icon">🔒</span>
-          <input type="password" id="password" placeholder="Password" required>
-        </div>
-        
-        <div class="input-group">
-          <span class="icon">🔊</span>
-          <select>
-            <option>Language - Default</option>
-            <option>English (US)</option>
-            <option>Japanese</option>
-          </select>
-        </div>
-        
-        <button type="submit" id="init-btn">Login</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Main Dashboard View (Appears after clicking Login) -->
-  <div id="main-dashboard">
-    <h1>TACTICAL OPERATIONS DASHBOARD</h1>
-    <p class="subhead">SYSTEM ACCESS GRANTED // WELCOME AGENT</p>
-
-    <div class="grid-container">
-      <div class="dash-card">
-        <h3>ACTIVE OPERATIONS</h3>
-        <ul>
-          <li><strong>Mission:</strong> Operation Red Shield</li>
-          <li><strong>Map:</strong> Altis</li>
-          <li><strong>Player Count:</strong> 24 / 64</li>
-          <li><strong>Uptime:</strong> 02:45:12</li>
+        <ul class="nav-list">
+            <li class="nav-item active" onclick="switchTab('briefing')">Current Briefing</li>
+            <li class="nav-item" onclick="switchTab('map')">Tactical Map</li>
+            <li class="nav-item" onclick="switchTab('assets')">Squad Assets</li>
+            <li class="nav-item" onclick="switchTab('intel')">Threat Intel & ROE</li>
         </ul>
-      </div>
-
-      <div class="dash-card">
-        <h3>SERVER STATUS</h3>
-        <ul>
-          <li><strong>FPS:</strong> 48.2</li>
-          <li><strong>Modset:</strong> WWII / Umbrella Assets</li>
-          <li><strong>Difficulty:</strong> Custom / Hardcore</li>
-          <li><strong>Port:</strong> 2302</li>
-        </ul>
-      </div>
-
-      <div class="dash-card">
-        <h3>SYSTEM LOGS</h3>
-        <p>[18:42:01] Mission script initialized successfully.<br>
-        [18:45:10] Player connected.<br>
-        [19:10:05] C-47 Airborne event triggered.<br>
-        [20:15:30] Objective 1 completed.</p>
-      </div>
     </div>
-  </div>
 
-  <!-- Security Warning Footer (ID ADDED HERE) -->
-  <div class="security-warning" id="security-warning">
-    <strong>SECURITY WARNING!</strong><br>
-    Anything viewed beyond this point is covered under the UMBRELLA Corp Security Agreement section of the Employee Code of Conduct.<br>
-    Second Party viewing by individuals without proper security clearance, will be handled by the highest administrative level possible!
-  </div>
+    <!-- MAIN VIEW AREA -->
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 id="page-title">OPERATION: THE OUTBREAK // MISSION BRIEF</h1>
+            <span class="badge">SECURITY LEVEL 4 REQUIRED</span>
+        </div>
 
-  <script>
-    function handleLogin(event) {
-      event.preventDefault();
-      
-      // Play audio on submit
-      const audio = document.getElementById('bg-audio');
-      if (audio) {
-        audio.play().catch(error => {
-          console.warn("Audio playback issue:", error);
+        <!-- TAB 1: MISSION BRIEFING -->
+        <div id="briefing" class="tab-page active">
+            <div class="intel-row">
+                <div class="intel-card">
+                    <h4>OPERATION NAME</h4>
+                    <p>THE OUTBREAK</p>
+                </div>
+                <div class="intel-card">
+                    <h4>LOCATION</h4>
+                    <p>Arctic Circle Subterranean Facility</p>
+                </div>
+                <div class="intel-card">
+                    <h4>BREACH RISK</h4>
+                    <p style="color:var(--bright-red);">9% (ESTIMATED)</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <div>
+                    <div class="panel">
+                        <h3>DIRECTIVE & BACKGROUND</h3>
+                        <p style="line-height: 1.5; font-size: 0.85rem;">
+                            All communications with the Arctic Circle Subterranean Facility have ceased following an unconfirmed bio-containment incident. Prior to blackout, contact was lost with Viper Squad near the Chemical Lab / Depot sector. Your combined objective is to insert via eastern access caves, establish a security perimeter, investigate the core, recover the Red Queen AI core, and clear extraction.
+                        </p>
+                    </div>
+
+                    <div class="panel">
+                        <h3>UNIT TASKINGS</h3>
+                        <ul class="obj-list">
+                            <li><strong>[UNIT HOUND - ASSAULT]:</strong> Insert at Eastern Subterranean Access. Advance to Chemical Lab / Depot to assess Viper Squad, push north to secure the Red Queen core, and exfil south via Missile Assembly & Tactical Bay.</li>
+                            <li><strong>[UNIT HOUND 2 - SUPPORT]:</strong> Hold and secure primary entry choke point, guard connection tunnels, protect geothermal/decontamination access, and cover Hound's retreat.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="panel">
+                        <h3>ASSIGNED ELEMENTS</h3>
+                        <p><strong>Primary Assault:</strong> Unit Hound</p>
+                        <p><strong>Tactical Support/Security:</strong> Unit Hound 2</p>
+                        <button class="slot-btn" onclick="switchTab('map')">View Facility Map</button>
+                    </div>
+
+                    <div class="panel">
+                        <h3>SECTOR SURVEILLANCE</h3>
+                        <div style="background:#000; height:120px; display:flex; align-items:center; justify-content:center; color:#555; border:1px solid #333; text-align:center;">
+                            [ COMMS BLACKOUT ACTIVE ]<br><small style="color:#888;">ARCTIC FACILITY SECTOR 01</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: TACTICAL MAP -->
+        <div id="map" class="tab-page">
+            <div class="panel">
+                <h3>FACILITY BLUEPRINT // ARCTIC CIRCLE SUBTERRANEAN</h3>
+                <div class="map-container">
+                    <img src="map.jpg" alt="Arctic Circle Subterranean Facility Blueprint">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SQUAD ASSETS -->
+        <div id="assets" class="tab-page">
+            <div class="squad-grid">
+                <div class="panel">
+                    <h3>UNIT HOUND (ASSAULT)</h3>
+                    <div class="slot-card"><span class="slot-title">Squad Leader:</span><div><input type="text" id="slot-hound-lead" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound-lead')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Rifleman:</span><div><input type="text" id="slot-hound-rifleman" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound-rifleman')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Medic:</span><div><input type="text" id="slot-hound-medic" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound-medic')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Machine Gunner:</span><div><input type="text" id="slot-hound-mg" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound-mg')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Demolition:</span><div><input type="text" id="slot-hound-demo" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound-demo')">Claim</button></div></div>
+                </div>
+
+                <div class="panel">
+                    <h3>UNIT HOUND 2 (SUPPORT)</h3>
+                    <div class="slot-card"><span class="slot-title">Squad Leader:</span><div><input type="text" id="slot-hound2-lead" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound2-lead')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Rifleman:</span><div><input type="text" id="slot-hound2-rifleman" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound2-rifleman')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Medic:</span><div><input type="text" id="slot-hound2-medic" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound2-medic')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Machine Gunner:</span><div><input type="text" id="slot-hound2-mg" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound2-mg')">Claim</button></div></div>
+                    <div class="slot-card"><span class="slot-title">Demolition:</span><div><input type="text" id="slot-hound2-demo" class="slot-input" placeholder="Unassigned"><button class="slot-btn" onclick="saveSlot('hound2-demo')">Claim</button></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: THREAT INTEL -->
+        <div id="intel" class="tab-page">
+            <div class="panel">
+                <h3>RULES OF ENGAGEMENT & PROTOCOLS</h3>
+                <ul class="obj-list">
+                    <li><strong>Target Identification:</strong> Neutralize any biological hazards or hostile personnel on sight.</li>
+                    <li><strong>Data Security:</strong> The Red Queen AI host system contains classified research data. If recovery is compromised, initiate remote purge protocols via local terminals.</li>
+                    <li><strong>Hazard Protocols:</strong> Biometric decontamination showers must be utilized if exiting via non-standard egress tunnels.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDuoPG1gr1ZTzJ02myCiJ0LxDB5oHXYJA",
+            authDomain: "arma-3-mission-database.firebaseapp.com",
+            databaseURL: "https://arma-3-mission-database-default-rtdb.firebaseio.com",
+            projectId: "arma-3-mission-database",
+            storageBucket: "arma-3-mission-database.firebasestorage.app",
+            messagingSenderId: "848190672968",
+            appId: "1:848190672968:web:aac81a087df5054d6f887d",
+            measurementId: "G-TE4EKQY2WP"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        database.ref('squad_slots').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach(slotId => {
+                    const inputElement = document.getElementById('slot-' + slotId);
+                    if (inputElement) {
+                        inputElement.value = data[slotId];
+                    }
+                });
+            }
         });
-      }
 
-      const loginCard = document.getElementById('login-card');
-      const topHeader = document.getElementById('top-header');
-      const warningFooter = document.getElementById('security-warning');
-      const dashboard = document.getElementById('main-dashboard');
-
-      // Hide login elements safely
-      if (loginCard) loginCard.style.opacity = '0';
-      
-      setTimeout(() => {
-        if (loginCard) loginCard.style.display = 'none';
-        if (topHeader) topHeader.style.display = 'none';
-        if (warningFooter) warningFooter.style.display = 'none';
-        
-        // Show main dashboard
-        if (dashboard) {
-          dashboard.style.display = 'block';
-          setTimeout(() => {
-            dashboard.style.opacity = '1';
-          }, 50);
+        function saveSlot(slotId) {
+            const val = document.getElementById('slot-' + slotId).value;
+            database.ref('squad_slots/' + slotId).set(val);
         }
 
-        // Adjust background for dashboard view
-        document.body.style.background = '#0a0a0c';
-        document.body.style.justifyContent = 'center';
-      }, 500);
-    }
-  </script>
+        /* --- SYNTHESIZED BOOT CHIME --- */
+        function playBootChime() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioCtx();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(110, ctx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3); 
+
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.8);
+            } catch(e) { console.log('WebAudio error:', e); }
+        }
+
+        /* --- SYSTEM INITIALIZATION --- */
+        function initializeSystem() {
+            const status = document.getElementById('status-text');
+            status.innerText = "DECRYPTING COMMAND PROTOCOLS...";
+            status.style.color = "#ff2a2a";
+
+            // 1. Play synthesize chime
+            playBootChime();
+
+            // 2. Play Audio File with Error Fallback
+            const audio = document.getElementById('bg-theme');
+            if (audio) {
+                audio.volume = 0.4;
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error("Audio playback failed:", error);
+                        status.innerText = "AUDIO FILE MISSING OR BLOCKED - SYSTEM FADE IN";
+                    });
+                }
+            }
+
+            // 3. Smooth Fade Transition
+            setTimeout(() => {
+                document.getElementById('splash-overlay').classList.add('hidden');
+            }, 600);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            if(tabId === 'briefing') navItems[0].classList.add('active');
+            if(tabId === 'map') navItems[1].classList.add('active');
+            if(tabId === 'assets') navItems[2].classList.add('active');
+            if(tabId === 'intel') navItems[3].classList.add('active');
+
+            const titles = {
+                'briefing': 'OPERATION: THE OUTBREAK // MISSION BRIEF',
+                'map': 'FACILITY BLUEPRINT // ARCTIC CIRCLE',
+                'assets': 'SQUAD ASSETS // ROSTER REGISTRATION',
+                'intel': 'THREAT INTEL & RULES OF ENGAGEMENT'
+            };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+    </script>
 </body>
 </html>
