@@ -339,7 +339,7 @@
     </div>
   </div>
 
-  <!-- Security Warning Footer -->
+  <!-- Security Warning Footer (ID ADDED HERE) -->
   <div class="security-warning" id="security-warning">
     <strong>SECURITY WARNING!</strong><br>
     Anything viewed beyond this point is covered under the UMBRELLA Corp Security Agreement section of the Employee Code of Conduct.<br>
@@ -363,18 +363,21 @@
       const warningFooter = document.getElementById('security-warning');
       const dashboard = document.getElementById('main-dashboard');
 
-      // Hide login elements
-      loginCard.style.opacity = '0';
+      // Hide login elements safely
+      if (loginCard) loginCard.style.opacity = '0';
+      
       setTimeout(() => {
-        loginCard.style.display = 'none';
-        topHeader.style.display = 'none';
-        warningFooter.style.display = 'none';
+        if (loginCard) loginCard.style.display = 'none';
+        if (topHeader) topHeader.style.display = 'none';
+        if (warningFooter) warningFooter.style.display = 'none';
         
         // Show main dashboard
-        dashboard.style.display = 'block';
-        setTimeout(() => {
-          dashboard.style.opacity = '1';
-        }, 50);
+        if (dashboard) {
+          dashboard.style.display = 'block';
+          setTimeout(() => {
+            dashboard.style.opacity = '1';
+          }, 50);
+        }
 
         // Adjust background for dashboard view
         document.body.style.background = '#0a0a0c';
@@ -382,7 +385,5 @@
       }, 500);
     }
   </script>
-</body>
-</html>
 </body>
 </html>
