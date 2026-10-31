@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[CLASSIFIED]</title>
+    <title>[CLASSIFIED] - UMBRELLA CORP TACTICAL HUB</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%2300ff88' stroke-width='6'><rect width='100' height='100' fill='%23050608'/><circle cx='50' cy='35' r='18'/><circle cx='37' cy='58' r='18'/><circle cx='63' cy='58' r='18'/><circle cx='50' cy='50' r='8' stroke='%23a855f7'/><circle cx='50' cy='50' r='26' stroke='%2300f0ff' stroke-width='4' stroke-dasharray='10 5'/></svg>">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --bg-color: #050608;
@@ -45,7 +45,7 @@
         #splash-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #050608; /* SOLID BLACK BACKGROUND */
+            background-color: #050608;
             background-image: radial-gradient(circle at center, rgba(139, 0, 0, 0.25) 0%, rgba(5, 6, 8, 1) 75%);
             display: flex;
             flex-direction: column;
@@ -90,7 +90,7 @@
         .umbrella-logo-svg {
             width: 90px;
             height: 90px;
-            margin-bottom: 15px;
+            margin: 0 auto 15px auto;
             filter: drop-shadow(0 0 10px rgba(255, 42, 42, 0.6));
             animation: pulse 3s infinite ease-in-out;
         }
@@ -153,6 +153,7 @@
             border-right: 1px solid var(--accent-red);
             display: flex;
             flex-direction: column;
+            flex-shrink: 0;
         }
 
         .brand {
@@ -173,6 +174,7 @@
             transition: 0.2s;
             font-size: 0.85rem;
             text-transform: uppercase;
+            color: #c5c6c7;
         }
 
         .nav-item:hover, .nav-item.active {
@@ -257,8 +259,8 @@
             font-size: 0.85rem;
         }
 
-        .intel-row { display: flex; gap: 15px; margin-bottom: 15px; }
-        .intel-card { flex: 1; background: #0d0f17; border: 1px solid var(--panel-border); padding: 12px; }
+        .intel-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .intel-card { flex: 1; min-width: 200px; background: #0d0f17; border: 1px solid var(--panel-border); padding: 12px; }
         .intel-card h4 { margin: 0 0 5px 0; color: var(--text-muted); font-size: 0.8rem; }
         .intel-card p { margin: 0; font-size: 0.9rem; color: #fff; }
 
@@ -268,11 +270,71 @@
         .slot-input { background: #000; border: 1px solid var(--panel-border); color: #fff; padding: 6px 10px; font-family: inherit; font-size: 0.8rem; width: 140px; }
         .slot-btn { background: var(--accent-red); border: 1px solid var(--bright-red); color: #fff; padding: 6px 10px; cursor: pointer; font-family: inherit; font-size: 0.75rem; }
         .slot-btn:hover { background: var(--bright-red); }
+
+        /* --- BODYCAM FEED STYLES --- */
+        .bodycam-container {
+            position: relative;
+            background: #000;
+            border: 1px solid #ff2a2a;
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.2);
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+        }
+
+        .bodycam-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .rec-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ff2a2a;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #ff2a2a;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .corner-reticle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-color: rgba(255, 42, 42, 0.6);
+            border-style: solid;
+        }
+        .tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+        .tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+        .bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+        .br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
+        .cam-controls-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 12px 18px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- AUDIO FILES (Checks theme.mp3, Hive.mp3, or hive.mp3) -->
+    <!-- AUDIO FILES -->
     <audio id="bg-theme" loop preload="auto">
         <source src="theme.mp3" type="audio/mpeg">
         <source src="Hive.mp3" type="audio/mpeg">
@@ -283,7 +345,6 @@
     <div id="splash-overlay">
         <div class="scan-line"></div>
         <div class="splash-card">
-            
             <svg class="umbrella-logo-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="250" cy="250" r="240" fill="#000000" stroke="#ff2a2a" stroke-width="8"/>
                 <path d="M250 250 L250 10 A240 240 0 0 1 419.7 80.3 Z" fill="#b30000"/>
@@ -318,6 +379,7 @@
             <li class="nav-item active" onclick="switchTab('briefing')">Current Briefing</li>
             <li class="nav-item" onclick="switchTab('map')">Tactical Map</li>
             <li class="nav-item" onclick="switchTab('assets')">Squad Assets</li>
+            <li class="nav-item" onclick="switchTab('bodycams')">📷 OPERATOR BODYCAMS</li>
             <li class="nav-item" onclick="switchTab('intel')">Threat Intel & ROE</li>
         </ul>
     </div>
@@ -342,11 +404,11 @@
                 </div>
                 <div class="intel-card">
                     <h4>BREACH RISK</h4>
-                    <p style="color:var(--bright-red);">9% (ESTIMATED)</p>
+                    <p style="color:var(--bright-red);">99% (CRITICAL)</p>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                 <div>
                     <div class="panel">
                         <h3>DIRECTIVE & BACKGROUND</h3>
@@ -369,12 +431,12 @@
                         <h3>ASSIGNED ELEMENTS</h3>
                         <p><strong>Primary Assault:</strong> Unit Hound</p>
                         <p><strong>Tactical Support/Security:</strong> Unit Hound 2</p>
-                        <button class="slot-btn" onclick="switchTab('map')">View Facility Map</button>
+                        <button class="slot-btn mt-3" onclick="switchTab('map')">View Facility Map</button>
                     </div>
 
                     <div class="panel">
                         <h3>SECTOR SURVEILLANCE</h3>
-                        <div style="background:#000; height:120px; display:flex; align-items:center; justify-content:center; color:#555; border:1px solid #333; text-align:center;">
+                        <div style="background:#000; height:140px; display:flex; align-items:center; justify-content:center; color:#555; border:1px solid #333; text-align:center;">
                             [ COMMS BLACKOUT ACTIVE ]<br><small style="color:#888;">ARCTIC FACILITY SECTOR 01</small>
                         </div>
                     </div>
@@ -387,7 +449,7 @@
             <div class="panel">
                 <h3>FACILITY BLUEPRINT // ARCTIC CIRCLE SUBTERRANEAN</h3>
                 <div class="map-container">
-                    <img src="map.jpg" alt="Arctic Circle Subterranean Facility Blueprint">
+                    <img src="map.jpg" alt="Arctic Circle Subterranean Facility Blueprint" onerror="this.onerror=null; this.src='https://placehold.co/800x500/0a0c10/ff2a2a?text=FACILITY+MAP+TACTICAL+BLUEPRINT';">
                 </div>
             </div>
         </div>
@@ -415,7 +477,136 @@
             </div>
         </div>
 
-        <!-- TAB 4: THREAT INTEL -->
+        <!-- TAB 4: OPERATOR BODYCAMS (NEW) -->
+        <div id="bodycams" class="tab-page">
+            <div class="cam-controls-bar">
+                <span style="color:var(--text-muted); font-size: 0.85rem;" class="font-bold">GRID VIEW CONTROLS:</span>
+                <button class="slot-btn" onclick="setCamLayout(1)">1x1 SINGLE FOCUS</button>
+                <button class="slot-btn" onclick="setCamLayout(2)">2x2 QUAD GRID</button>
+                <button class="slot-btn" onclick="setCamLayout(4)">4x2 FULL SQUAD</button>
+                <span class="ml-auto text-xs text-red-400">STATUS: LIVE FEED MONITORING</span>
+            </div>
+
+            <!-- STREAM CHANNELS CONFIG PANEL -->
+            <div class="panel mb-6">
+                <h3>OPERATOR CHANNEL ASSIGNMENTS</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">CAM-01 (ALPHA LEAD)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="cam-input-1" value="shroud" class="slot-input w-full">
+                            <button class="slot-btn" onclick="updateCamChannel(1)">SET</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">CAM-02 (BRAVO LEAD)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="cam-input-2" value="lirik" class="slot-input w-full">
+                            <button class="slot-btn" onclick="updateCamChannel(2)">SET</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">CAM-03 (POINTMAN)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="cam-input-3" value="summit1g" class="slot-input w-full">
+                            <button class="slot-btn" onclick="updateCamChannel(3)">SET</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">CAM-04 (SUPPORT)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="cam-input-4" value="fps_douyu" class="slot-input w-full">
+                            <button class="slot-btn" onclick="updateCamChannel(4)">SET</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BODYCAM STREAMS GRID -->
+            <div id="cams-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- CAM 1 -->
+                <div class="bodycam-container" id="cam-box-1">
+                    <div class="corner-reticle tl"></div><div class="corner-reticle tr"></div>
+                    <div class="corner-reticle bl"></div><div class="corner-reticle br"></div>
+                    <div class="bodycam-overlay">
+                        <div class="flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="rec-dot"></span>
+                                <span class="text-red-500 font-bold tracking-widest">LIVE // CAM-01</span>
+                            </div>
+                            <span class="text-teal-400" id="cam-name-1">OPERATOR: SHROUD</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <span>BATTERY: 98%</span>
+                            <span>SIG: OPTIMAL</span>
+                        </div>
+                    </div>
+                    <iframe id="iframe-cam-1" class="w-full h-full border-0" src="" allowfullscreen></iframe>
+                </div>
+
+                <!-- CAM 2 -->
+                <div class="bodycam-container" id="cam-box-2">
+                    <div class="corner-reticle tl"></div><div class="corner-reticle tr"></div>
+                    <div class="corner-reticle bl"></div><div class="corner-reticle br"></div>
+                    <div class="bodycam-overlay">
+                        <div class="flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="rec-dot"></span>
+                                <span class="text-red-500 font-bold tracking-widest">LIVE // CAM-02</span>
+                            </div>
+                            <span class="text-teal-400" id="cam-name-2">OPERATOR: LIRIK</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <span>BATTERY: 92%</span>
+                            <span>SIG: HIGH</span>
+                        </div>
+                    </div>
+                    <iframe id="iframe-cam-2" class="w-full h-full border-0" src="" allowfullscreen></iframe>
+                </div>
+
+                <!-- CAM 3 -->
+                <div class="bodycam-container" id="cam-box-3">
+                    <div class="corner-reticle tl"></div><div class="corner-reticle tr"></div>
+                    <div class="corner-reticle bl"></div><div class="corner-reticle br"></div>
+                    <div class="bodycam-overlay">
+                        <div class="flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="rec-dot"></span>
+                                <span class="text-red-500 font-bold tracking-widest">LIVE // CAM-03</span>
+                            </div>
+                            <span class="text-teal-400" id="cam-name-3">OPERATOR: SUMMIT1G</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <span>BATTERY: 85%</span>
+                            <span>SIG: FAIR</span>
+                        </div>
+                    </div>
+                    <iframe id="iframe-cam-3" class="w-full h-full border-0" src="" allowfullscreen></iframe>
+                </div>
+
+                <!-- CAM 4 -->
+                <div class="bodycam-container" id="cam-box-4">
+                    <div class="corner-reticle tl"></div><div class="corner-reticle tr"></div>
+                    <div class="corner-reticle bl"></div><div class="corner-reticle br"></div>
+                    <div class="bodycam-overlay">
+                        <div class="flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="rec-dot"></span>
+                                <span class="text-red-500 font-bold tracking-widest">LIVE // CAM-04</span>
+                            </div>
+                            <span class="text-teal-400" id="cam-name-4">OPERATOR: FPS_DOUYU</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <span>BATTERY: 77%</span>
+                            <span>SIG: STABLE</span>
+                        </div>
+                    </div>
+                    <iframe id="iframe-cam-4" class="w-full h-full border-0" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: THREAT INTEL -->
         <div id="intel" class="tab-page">
             <div class="panel">
                 <h3>RULES OF ENGAGEMENT & PROTOCOLS</h3>
@@ -464,6 +655,61 @@
             database.ref('squad_slots/' + slotId).set(val);
         }
 
+        /* --- BODYCAM TWITCH STREAM CONTROLS --- */
+        const parentDomain = window.location.hostname || "localhost";
+
+        function buildTwitchUrl(channel) {
+            return `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${parentDomain}&parent=localhost&muted=true&autoplay=true`;
+        }
+
+        function updateCamChannel(id) {
+            const channel = document.getElementById(`cam-input-${id}`).value.trim();
+            if (!channel) return;
+            
+            const iframe = document.getElementById(`iframe-cam-${id}`);
+            const label = document.getElementById(`cam-name-${id}`);
+            
+            iframe.src = buildTwitchUrl(channel);
+            label.innerText = `OPERATOR: ${channel.toUpperCase()}`;
+
+            // Save active camera settings to Firebase realtime database if online
+            try {
+                database.ref(`bodycams/cam_${id}`).set(channel);
+            } catch(e) {
+                console.log('Firebase cam sync error:', e);
+            }
+        }
+
+        // Realtime Firebase Bodycam sync listener
+        database.ref('bodycams').on('value', (snapshot) => {
+            const cams = snapshot.val();
+            if (cams) {
+                [1, 2, 3, 4].forEach(id => {
+                    if (cams[`cam_${id}`]) {
+                        const channel = cams[`cam_${id}`];
+                        const input = document.getElementById(`cam-input-${id}`);
+                        if (input && input.value !== channel) {
+                            input.value = channel;
+                            document.getElementById(`iframe-cam-${id}`).src = buildTwitchUrl(channel);
+                            document.getElementById(`cam-name-${id}`).innerText = `OPERATOR: ${channel.toUpperCase()}`;
+                        }
+                    }
+                });
+            }
+        });
+
+        function setCamLayout(cols) {
+            const grid = document.getElementById('cams-grid');
+            grid.className = 'grid gap-4 ';
+            if (cols === 1) {
+                grid.className += 'grid-cols-1';
+            } else if (cols === 2) {
+                grid.className += 'grid-cols-1 md:grid-cols-2';
+            } else {
+                grid.className += 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+            }
+        }
+
         /* --- SYNTHESIZED BOOT CHIME --- */
         function playBootChime() {
             try {
@@ -499,7 +745,10 @@
             // 1. Play synthesize chime
             playBootChime();
 
-            // 2. Play Audio File with Error Fallback
+            // 2. Load Twitch IFrames
+            [1, 2, 3, 4].forEach(id => updateCamChannel(id));
+
+            // 3. Play Audio File with Error Fallback
             const audio = document.getElementById('bg-theme');
             if (audio) {
                 audio.volume = 0.4;
@@ -512,7 +761,7 @@
                 }
             }
 
-            // 3. Smooth Fade Transition
+            // 4. Smooth Fade Transition
             setTimeout(() => {
                 document.getElementById('splash-overlay').classList.add('hidden');
             }, 600);
@@ -528,12 +777,14 @@
             if(tabId === 'briefing') navItems[0].classList.add('active');
             if(tabId === 'map') navItems[1].classList.add('active');
             if(tabId === 'assets') navItems[2].classList.add('active');
-            if(tabId === 'intel') navItems[3].classList.add('active');
+            if(tabId === 'bodycams') navItems[3].classList.add('active');
+            if(tabId === 'intel') navItems[4].classList.add('active');
 
             const titles = {
                 'briefing': 'OPERATION: THE OUTBREAK // MISSION BRIEF',
                 'map': 'FACILITY BLUEPRINT // ARCTIC CIRCLE',
                 'assets': 'SQUAD ASSETS // ROSTER REGISTRATION',
+                'bodycams': 'OPERATOR BODYCAMS // LIVE FEED MONITORING',
                 'intel': 'THREAT INTEL & RULES OF ENGAGEMENT'
             };
             document.getElementById('page-title').innerText = titles[tabId];
