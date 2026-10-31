@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -381,6 +381,7 @@
             <li class="nav-item" onclick="switchTab('assets')">Squad Assets</li>
             <li class="nav-item" onclick="switchTab('bodycams')">📷 OPERATOR BODYCAMS</li>
             <li class="nav-item" onclick="switchTab('intel')">Threat Intel & ROE</li>
+            <li class="nav-item" onclick="switchTab('settings')">⚙ SYSTEM SETTINGS</li>
         </ul>
     </div>
 
@@ -617,6 +618,37 @@
                 </ul>
             </div>
         </div>
+
+        <!-- TAB 6: SYSTEM SETTINGS -->
+        <div id="settings" class="tab-page">
+            <div class="panel max-w-xl">
+                <h3>AUDIO & SYSTEM CONFIGURATION</h3>
+                <div class="space-y-6 mt-4">
+                    <!-- Audio Controls -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm text-gray-300 font-bold tracking-wider">BACKGROUND MUSIC VOLUME</label>
+                            <span id="volume-display" class="text-xs text-teal-400 font-mono">40%</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <input type="range" id="bg-volume-slider" min="0" max="100" value="40" 
+                                   class="w-full accent-red-600 bg-gray-900 h-2 rounded cursor-pointer" 
+                                   oninput="updateAudioVolume(this.value)">
+                            <button id="mute-btn" class="slot-btn" onclick="toggleMuteAudio()">MUTE</button>
+                        </div>
+                    </div>
+
+                    <!-- Audio Test & Status -->
+                    <div class="pt-4 border-t border-gray-800 flex justify-between items-center">
+                        <div>
+                            <div class="text-xs text-gray-400">AUDIO ENGINE CHIME TEST</div>
+                            <div id="audio-status-label" class="text-xs text-teal-400">STATUS: ACTIVE</div>
+                        </div>
+                        <button class="slot-btn" onclick="playBootChime()">TEST CHIME AUDIO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- FIREBASE SDK -->
@@ -779,15 +811,54 @@
             if(tabId === 'assets') navItems[2].classList.add('active');
             if(tabId === 'bodycams') navItems[3].classList.add('active');
             if(tabId === 'intel') navItems[4].classList.add('active');
+            if(tabId === 'settings') navItems[5].classList.add('active');
 
             const titles = {
                 'briefing': 'OPERATION: THE OUTBREAK // MISSION BRIEF',
                 'map': 'FACILITY BLUEPRINT // ARCTIC CIRCLE',
                 'assets': 'SQUAD ASSETS // ROSTER REGISTRATION',
                 'bodycams': 'OPERATOR BODYCAMS // LIVE FEED MONITORING',
-                'intel': 'THREAT INTEL & RULES OF ENGAGEMENT'
+                'intel': 'THREAT INTEL & RULES OF ENGAGEMENT',
+                'settings': 'SYSTEM SETTINGS // AUDIO CONTROL & DIAGNOSTICS'
             };
             document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        /* --- AUDIO CONTROL FUNCTIONS --- */
+        let previousVolume = 40;
+
+        function updateAudioVolume(val) {
+            const audio = document.getElementById('bg-theme');
+            const display = document.getElementById('volume-display');
+            const muteBtn = document.getElementById('mute-btn');
+            
+            const volumeFraction = val / 100;
+            if (audio) {
+                audio.volume = volumeFraction;
+            }
+            if (display) {
+                display.innerText = `${val}%`;
+            }
+
+            if (val == 0) {
+                muteBtn.innerText = "UNMUTE";
+            } else {
+                muteBtn.innerText = "MUTE";
+                previousVolume = val;
+            }
+        }
+
+        function toggleMuteAudio() {
+            const slider = document.getElementById('bg-volume-slider');
+            if (!slider) return;
+
+            if (slider.value > 0) {
+                previousVolume = slider.value;
+                slider.value = 0;
+            } else {
+                slider.value = previousVolume || 40;
+            }
+            updateAudioVolume(slider.value);
         }
     </script>
 </body>
